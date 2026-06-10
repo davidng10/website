@@ -1,17 +1,230 @@
 ---
+import "../styles/global.css";
 
+const links = [
+  {
+    label: "GitHub",
+    href: "https://github.com/davidng10",
+    icon: "ph-github-logo",
+  },
+  {
+    label: "LinkedIn",
+    href: "https://www.linkedin.com/in/ngwenbin/",
+    icon: "ph-linkedin-logo",
+  },
+];
+
+const projects = [
+  {
+    name: "React Data Grid",
+    href: "https://react-data-grid-kappa.vercel.app/",
+    description:
+      "Experimental DOM based data grid targeting 60 FPS interactions across range selection, pinned columns, expandable rows, editable cells, drag-sorted columns, and row/column virtualization.",
+    stack: ["React", "TypeScript"],
+  },
+  {
+    name: "Product Data Platform",
+    href: "https://github.com/davidng10/product-factory-gin",
+    description:
+      "Trustana-inspired product data system for exploring RDBMS query patterns and structured AI outputs across ingestion, enrichment, and async processing.",
+    stack: ["Next.js", "PostgreSQL", "Prisma", "AWS Lambda", "OpenAI"],
+  },
+  {
+    name: "Recyclables",
+    href: "https://github.com/davidng10/RecyclablesBot/",
+    description:
+      "Telegram-based HDB recyclables pickup scheduler bot that helped collect 4.2 tons of recyclables for 800+ users.",
+    stack: [
+      "Telegram API",
+      "Python",
+      "Google Cloud Firestore",
+      "Google Cloud Functions",
+    ],
+  },
+];
+
+const experience = [
+  {
+    role: "Senior Frontend Engineer",
+    company: "Trustana",
+    period: "2025-now",
+    description:
+      "Lead frontend architecture and sprint execution for a product data automation platform processing 100k+ SKUs/month.",
+  },
+  {
+    role: "Frontend Engineer",
+    company: "Trustana",
+    period: "2022-2024",
+  },
+  {
+    role: "Software Engineer Intern",
+    company: "Trustana",
+    period: "2022",
+  },
+  {
+    role: "Embedded Software Intern",
+    company: "Aerofoils GmbH",
+    period: "2021",
+    description:
+      "Built ESP32/FreeRTOS controller UI foundations and reusable LVGL components for an electric hydrofoil remote.",
+  },
+];
+
+const tools = [
+  { name: "TypeScript" },
+  { name: "React" },
+  { name: "Next.js" },
+  { name: "Tailwind" },
+  { name: "Python" },
+  { name: "Astro" },
+  { name: "Zustand" },
+  { name: "React Query" },
+  { name: "Vitest" },
+  { name: "React Testing Library" },
+  { name: "GraphQL" },
+  { name: "REST" },
+  { name: "AWS Lambda" },
+  { name: "AWS SQS" },
+  { name: "DocumentDB" },
+  { name: "Serverless" },
+];
 ---
 
 <html lang="en">
-	<head>
-		<meta charset="utf-8" />
-		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-		<link rel="icon" href="/favicon.ico" />
-		<meta name="viewport" content="width=device-width" />
-		<meta name="generator" content={Astro.generator} />
-		<title>Astro</title>
-	</head>
-	<body>
-		<h1>Astro</h1>
-	</body>
+  <head>
+    <meta charset="utf-8" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="icon" href="/favicon.ico" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&family=Prata&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      type="text/css"
+      href="https://cdn.jsdelivr.net/npm/@phosphor-icons/web@2.1.2/src/regular/style.css"
+    />
+    <meta name="viewport" content="width=device-width" />
+    <meta name="generator" content={Astro.generator} />
+    <meta
+      name="description"
+      content="Ng Wen Bin is a Singapore-based frontend engineer building product data tools, React interfaces, and practical automation systems."
+    />
+    <title>Ng Wen Bin</title>
+  </head>
+  <body class="px-5 py-6 text-base leading-7 text-stone-100 sm:px-8 sm:py-10">
+    <main class="mx-auto max-w-6xl">
+      <header
+        class="flex flex-wrap items-center justify-end gap-4 border-b border-white/10 pb-6"
+      >
+        <nav aria-label="Contact links">
+          <ul class="flex flex-wrap gap-x-6 gap-y-2 text-base text-stone-400">
+            {
+              links.map((link) => (
+                <li>
+                  <a class="transition-colors" href={link.href}>
+                    {link.label}
+                  </a>
+                </li>
+              ))
+            }
+          </ul>
+        </nav>
+      </header>
+
+      <!-- <section class="grid gap-12 py-20 sm:py-28 lg:grid-cols-[1.2fr_0.8fr]">
+        <div>
+          <h1
+            class="max-w-4xl text-6xl font-medium leading-[0.95] tracking-tighter text-stone-50 sm:text-8xl"
+          >
+            Ng Wen Bin
+          </h1>
+          <p
+            class="mt-6 max-w-2xl text-2xl leading-9 tracking-tight text-white"
+          >
+            Frontend engineer building fast, typed interfaces and practical
+            automation for data-heavy products.
+          </p>
+        </div>
+        <div class="max-w-md self-end text-base leading-8 text-white">
+          <p>
+            I’m a senior frontend engineer at Trustana, focused on fast, typed,
+            maintainable interfaces for messy data workflows, practical
+            automation, and measurable UI performance.
+          </p>
+        </div>
+      </section> -->
+
+      <section class="py-18 text-center">
+        <h2
+          class="mt-8 text-4xl font-medium leading-none tracking-tighter font-serif"
+        >
+          Ng Wen Bin
+        </h2>
+        <p class="mx-auto mt-8 max-w-3xl text-base text-white">
+          Software engineer based in Singapore, frontend focused. Experienced in
+          building products, frontend performance optimization, and automation.
+        </p>
+      </section>
+
+      <section class="grid gap-8 py-18 md:grid-cols-[180px_1fr]">
+        <h2 class="font-serif text-base text-stone-400">Tools / Languages</h2>
+        <p class="max-w-3xl text-base leading-8 text-white">
+          {tools.map((tool) => tool.name).join(" · ")}
+        </p>
+      </section>
+
+      <section class="grid gap-8 py-18 md:grid-cols-[180px_1fr]">
+        <h2 class="font-serif text-base text-stone-400">Projects</h2>
+        <div class="grid gap-10 lg:grid-cols-3">
+          {
+            projects.map((project) => (
+              <article class="group flex h-full flex-col pb-8">
+                <h3 class="text-base leading-7 text-stone-50">
+                  <a
+                    class="inline-flex items-center gap-1.5 transition-colors"
+                    href={project.href}
+                  >
+                    {project.name}
+                    <i
+                      class="ph ph-arrow-up-right mb-0.5 text-sm opacity-100 transition-opacity duration-500 sm:opacity-0 sm:group-hover:opacity-100"
+                      aria-hidden="true"
+                    />
+                  </a>
+                </h3>
+                <p class="mt-4 text-white">{project.description}</p>
+                <p class="mt-auto pt-5 text-base text-stone-400">
+                  {project.stack.join(" / ")}
+                </p>
+              </article>
+            ))
+          }
+        </div>
+      </section>
+
+      <section class="grid gap-8 py-18 md:grid-cols-[180px_1fr]">
+        <h2 class="font-serif text-base text-stone-400">Work</h2>
+        <div class="divide-y divide-white/10">
+          {
+            experience.map((item) => (
+              <article class="grid gap-4 py-7 md:grid-cols-[180px_1fr] first:pt-0 last:pb-0">
+                <div class="text-base leading-7 text-stone-400">
+                  <p>{item.company}</p>
+                  <p>{item.period}</p>
+                </div>
+                <div>
+                  <h3 class="text-base leading-7 text-stone-50">{item.role}</h3>
+                  {item.description && (
+                    <p class="mt-3 max-w-2xl text-white">{item.description}</p>
+                  )}
+                </div>
+              </article>
+            ))
+          }
+        </div>
+      </section>
+    </main>
+  </body>
 </html>
