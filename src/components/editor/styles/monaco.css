@@ -1,0 +1,39 @@
+.editor-raw-view {
+  display: flex;
+  flex-direction: column;
+  background: #f7f8f9;
+}
+
+.editor-monaco-shell,
+.editor-monaco-loading {
+  flex: 1;
+  min-height: 35rem;
+}
+
+.editor-monaco-shell {
+  --editor-monaco-height: 35rem;
+
+  width: 100%;
+  height: var(--editor-monaco-height);
+  min-width: 0;
+  overflow: hidden;
+}
+
+.editor-monaco-loading {
+  display: grid;
+  place-items: center;
+  color: #7a838e;
+  font-family: "Geist Variable", "Geist", ui-sans-serif, system-ui, sans-serif;
+  font-size: 0.78rem;
+}
+
+@media (max-width: 639px) {
+  .editor-monaco-shell,
+  .editor-monaco-loading {
+    min-height: 31rem;
+  }
+
+  .editor-monaco-shell {
+    --editor-monaco-height: 31rem;
+  }
+}

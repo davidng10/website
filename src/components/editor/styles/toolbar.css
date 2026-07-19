@@ -1,0 +1,57 @@
+.editor-toolbar {
+  display: flex;
+  min-height: 3.45rem;
+  align-items: center;
+  gap: 0.45rem;
+  overflow-x: auto;
+  padding: 9px 12px;
+  border-bottom: 1px solid #e3e5e8;
+  background: #fbfbfb;
+  font-family: "Geist Variable", "Geist", ui-sans-serif, system-ui, sans-serif;
+  scrollbar-width: thin;
+}
+
+.editor-tool-group {
+  display: flex;
+  flex: none;
+  align-items: center;
+  gap: 0.15rem;
+  padding-right: 7px;
+  border-right: 1px solid #dfe2e6;
+}
+
+.editor-tool-group:last-child {
+  padding-right: 0;
+  border-right: 0;
+}
+
+.editor-tool {
+  display: grid;
+  min-width: 2rem;
+  height: 2rem;
+  place-items: center;
+  border: 1px solid transparent;
+  border-radius: 3px;
+  background: transparent;
+  padding: 0 7px;
+  color: #4b5562;
+  font-family: inherit;
+  cursor: pointer;
+}
+
+.editor-tool:hover:not(:disabled) {
+  border-color: #d7dbe0;
+  background: #fff;
+  color: #1649c4;
+}
+
+.editor-tool[aria-pressed="true"] {
+  border-color: #c8d3f4;
+  background: #e9eefc;
+  color: #1649c4;
+}
+
+.editor-tool:disabled {
+  opacity: 0.35;
+  cursor: not-allowed;
+}

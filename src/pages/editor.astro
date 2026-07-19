@@ -1,0 +1,8 @@
+---
+import MarkdownEditor from "../components/editor/MarkdownEditor";
+import BaseLayout from "../layouts/BaseLayout.astro";
+---
+
+<BaseLayout title="Editor" description="Editor" flush>
+  <MarkdownEditor client:only="react" />
+</BaseLayout>

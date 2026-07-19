@@ -1,9 +1,14 @@
 @import "tailwindcss";
 
 :root {
+  --rt-opacity: 1 !important;
   font-family: "Source Serif 4 Variable", ui-serif, system-ui, serif;
   font-synthesis: none;
   text-rendering: optimizeLegibility;
+}
+
+.react-tooltip-content-wrapper {
+  padding: 4px 8px !important;
 }
 
 html {
@@ -12,7 +17,7 @@ html {
 
 .grid-frame {
   width: calc(100% - 2rem);
-  max-width: 800px;
+  max-width: 860px;
   margin-inline: auto;
   border-inline: 1px solid #e3e5e8;
 }
@@ -41,7 +46,7 @@ html {
 
 @layer base {
   a {
-    color: #1F49D6;
+    color: #0001ff;
     text-decoration: none;
   }
 
@@ -77,22 +82,17 @@ html {
   }
 }
 
-::selection {
-  color: white;
-  background: #1649c4;
-}
-
 .prose {
   color: #000;
   font-size: 1rem;
   line-height: 1.65;
 }
 
-.prose> :first-child {
+.prose > :first-child {
   margin-top: 0;
 }
 
-.prose> :last-child {
+.prose > :last-child {
   margin-bottom: 0;
 }
 
@@ -150,4 +150,10 @@ html {
 .prose pre code {
   background: transparent;
   padding: 0;
+}
+
+.react-tooltip {
+  padding: 0px !important;
+  border-radius: 2px !important;
+  font-size: 12px !important;
 }

@@ -1,0 +1,45 @@
+.editor-workspace button:not(.editor-tool):not(.editor-mode-button) {
+  display: inline-flex;
+  min-height: 2.15rem;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  border: 1px solid #d7dbe0;
+  background: #fff;
+  padding: 6px 10px;
+  color: #3e4855;
+  font-family: "Geist Variable", "Geist", ui-sans-serif, system-ui, sans-serif;
+  font-size: 0.75rem;
+  font-weight: 550;
+  cursor: pointer;
+}
+
+.editor-workspace button:not(.editor-tool):not(.editor-mode-button):hover {
+  border-color: #9ca4ae;
+  color: #202938;
+}
+
+.editor-workspace button.primary:not(.editor-tool):not(.editor-mode-button) {
+  border-color: #0001ff;
+  background: #0001ff;
+  color: #fff;
+}
+
+.editor-workspace button.primary:not(.editor-tool):not(.editor-mode-button):hover {
+  border-color: #0000cc;
+  background: #0000cc;
+  color: #fff;
+}
+
+.editor-workspace button:not(.editor-tool):not(.editor-mode-button):disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+.editor-workspace button:focus-visible {
+  outline: 1px solid #004cff58;
+}
+
+.editor-workspace button svg {
+  flex: none;
+}

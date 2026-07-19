@@ -20,6 +20,7 @@ const navigation = [
   },
   { label: "About", href: "/about/", active: pathname === "/about/" },
   { label: "Contact", href: "/contact/", active: pathname === "/contact/" },
+  { label: "Editor", href: "/editor/", active: pathname === "/editor/" },
 ];
 ---
 
@@ -30,8 +31,10 @@ const navigation = [
     <meta name="viewport" content="width=device-width" />
     <meta name="generator" content={Astro.generator} />
     <meta name="description" content={description} />
-    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <link rel="icon" href="/favicon.ico" />
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png" />
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png" />
     <title>{title} | Wenbin's Thoughts</title>
     <ClientRouter fallback="swap" />
   </head>
