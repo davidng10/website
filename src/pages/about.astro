@@ -1,0 +1,49 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+---
+
+<BaseLayout
+  title="About"
+  description="About Wen Bin, a software engineer based in Singapore."
+>
+  <article aria-labelledby="about-title">
+    <h1 id="about-title" class="mb-2">About</h1>
+    <p class="mb-0 text-base leading-[1.55] text-black">
+      Hi! I’m Wen Bin - you can call me David, I'm a software engineer based in
+      Singapore.
+    </p>
+    <br />
+    <p>
+      I currently work at <a target="_blank" href="https://www.trustana.com"
+        >Trustana</a
+      >, where I build software for retailers like Toys'R'Us, Harvey Norman,
+      David Jones etc to manage and optimize data of 100K - 1M products a month.
+    </p>
+    <figure class="flex flex-col items-center gap-1">
+      <img
+        class="mx-auto mt-5 block aspect-square w-full max-w-[320px] rounded-[3px] object-cover"
+        src="/profile_pic.png"
+        alt="Wen Bin by the water at sunset"
+        width="400"
+        height="400"
+      />
+      <figcaption class="text-xs max-w-1/3 text-center">
+        Picture of me generated using a custom FLUX workflow via ComfyUI
+      </figcaption>
+    </figure>
+
+    <section class="mt-6" aria-labelledby="welcome-title">
+      <p class="mb-3 text-base leading-[1.55] text-black">
+        I'm trying to write about topics and work that are representative of
+        what I like: complex components and deep ends into system designs.
+      </p>
+      {
+        (
+          <ol class="m-0 pl-6 text-base leading-[1.55] text-black">
+            <li>Nothing yet</li>
+          </ol>
+        )
+      }
+    </section>
+  </article>
+</BaseLayout>

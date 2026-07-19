@@ -1,0 +1,87 @@
+---
+import "@fontsource-variable/source-serif-4";
+import "../styles/global.css";
+import { ClientRouter } from "astro:transitions";
+
+interface Props {
+  title: string;
+  description: string;
+  flush?: boolean;
+}
+
+const { title, description, flush = false } = Astro.props;
+const pathname = Astro.url.pathname;
+
+const navigation = [
+  {
+    label: "Thoughts",
+    href: "/",
+    active: pathname === "/" || pathname.startsWith("/thoughts/"),
+  },
+  { label: "About", href: "/about/", active: pathname === "/about/" },
+  { label: "Contact", href: "/contact/", active: pathname === "/contact/" },
+];
+---
+
+<!doctype html>
+<html lang="en" transition:animate="none">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width" />
+    <meta name="generator" content={Astro.generator} />
+    <meta name="description" content={description} />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="icon" href="/favicon.ico" />
+    <title>{title} | Wenbin's Thoughts</title>
+    <ClientRouter fallback="swap" />
+  </head>
+  <body
+    class="min-h-screen overflow-x-hidden bg-[#fbfbfb] text-[#202938] antialiased"
+  >
+    <a
+      class="fixed left-3 top-3 z-10 -translate-y-20 rounded-sm bg-[#202938] px-3 py-2 text-sm text-white focus:translate-y-0"
+      href="#main-content">Skip to content</a
+    >
+
+    <header class="h-24 border-y border-[#e3e5e8]">
+      <div class="grid-frame grid h-full place-items-center text-center">
+        <a
+          class="text-xl font-semibold tracking-[-0.035em] text-[#202938] no-underline hover:no-underline"
+          href="/"
+        >
+          Wen Bin's Thoughts
+        </a>
+      </div>
+    </header>
+
+    <nav class="h-12 border-b border-[#e3e5e8]" aria-label="Primary navigation">
+      <div
+        class="grid-frame flex h-full items-center justify-start gap-5 px-5 py-3 text-sm sm:gap-6"
+      >
+        {
+          navigation.map((item) => (
+            <a
+              class:list={[
+                "focus-visible:rounded-sm focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#1649c4]",
+              ]}
+              href={item.href}
+              aria-current={item.active ? "page" : undefined}
+            >
+              {item.label}
+            </a>
+          ))
+        }
+      </div>
+    </nav>
+
+    <main
+      id="main-content"
+      class:list={[
+        "grid-frame min-h-[calc(100vh-151px)]",
+        !flush && "px-6 py-12 sm:px-12 sm:py-16 md:px-16",
+      ]}
+    >
+      <slot />
+    </main>
+  </body>
+</html>
