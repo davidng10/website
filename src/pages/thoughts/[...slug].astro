@@ -27,14 +27,18 @@ const published = new Intl.DateTimeFormat("en", {
 <BaseLayout title={`${post.data.title}`} description={post.data.description}>
   <article>
     <header class="mb-8 border-b border-[#e3e5e8] pb-7">
+      <time
+        class="mb-2 block text-[0.8125rem] text-[#68717d]"
+        datetime={post.data.published.toISOString()}
+      >
+        {published}
+      </time>
       <h1 class="mb-3">
         {post.data.title}
       </h1>
-      <div class="flex gap-2 text-[0.8125rem] text-[#68717d]">
-        <time datetime={post.data.published.toISOString()}>{published}</time>
-        <span aria-hidden="true">·</span>
-        <span>{post.data.description}</span>
-      </div>
+      <p class="m-0 max-w-2xl leading-[1.55] text-[#4f5966]">
+        {post.data.description}
+      </p>
     </header>
     <div class="prose">
       <Content />
