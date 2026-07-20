@@ -4,9 +4,11 @@ import { $isLinkNode, TOGGLE_LINK_COMMAND } from "@lexical/link";
 import {
   INSERT_ORDERED_LIST_COMMAND,
   INSERT_UNORDERED_LIST_COMMAND,
+  ListItemNode,
   REMOVE_LIST_COMMAND,
   $isListNode,
 } from "@lexical/list";
+import { INSERT_TABLE_COMMAND } from "@lexical/table";
 import { useLexicalComposerContext } from "@lexical/react/LexicalComposerContext";
 import {
   $createHeadingNode,
@@ -15,7 +17,11 @@ import {
   $isQuoteNode,
 } from "@lexical/rich-text";
 import { $setBlocksType } from "@lexical/selection";
-import { $findMatchingParent } from "@lexical/utils";
+import {
+  $findMatchingParent,
+  $getNearestNodeOfType,
+  $insertNodeToNearestRoot,
+} from "@lexical/utils";
 import {
   $createParagraphNode,
   $getSelection,
@@ -24,6 +30,8 @@ import {
   CAN_UNDO_COMMAND,
   COMMAND_PRIORITY_LOW,
   FORMAT_TEXT_COMMAND,
+  INDENT_CONTENT_COMMAND,
+  OUTDENT_CONTENT_COMMAND,
   REDO_COMMAND,
   UNDO_COMMAND,
 } from "lexical";
@@ -33,6 +41,7 @@ import { CodeIcon } from "@phosphor-icons/react/dist/csr/Code";
 import { CodeBlockIcon } from "@phosphor-icons/react/dist/csr/CodeBlock";
 import { LinkSimpleBreakIcon } from "@phosphor-icons/react/dist/csr/LinkSimpleBreak";
 import { LinkSimpleIcon } from "@phosphor-icons/react/dist/csr/LinkSimple";
+import { ImageSquareIcon } from "@phosphor-icons/react/dist/csr/ImageSquare";
 import { ListBulletsIcon } from "@phosphor-icons/react/dist/csr/ListBullets";
 import { ListNumbersIcon } from "@phosphor-icons/react/dist/csr/ListNumbers";
 import { QuotesIcon } from "@phosphor-icons/react/dist/csr/Quotes";
@@ -41,7 +50,11 @@ import { TextHOneIcon } from "@phosphor-icons/react/dist/csr/TextHOne";
 import { TextHThreeIcon } from "@phosphor-icons/react/dist/csr/TextHThree";
 import { TextHTwoIcon } from "@phosphor-icons/react/dist/csr/TextHTwo";
 import { TextItalicIcon } from "@phosphor-icons/react/dist/csr/TextItalic";
+import { TextIndentIcon } from "@phosphor-icons/react/dist/csr/TextIndent";
+import { TextOutdentIcon } from "@phosphor-icons/react/dist/csr/TextOutdent";
 import { TextTIcon } from "@phosphor-icons/react/dist/csr/TextT";
+import { TableIcon } from "@phosphor-icons/react/dist/csr/Table";
+import { $createImageNode } from "./ImageNode";
 import "./styles/toolbar.css";
 
 type BlockType = "paragraph" | "h1" | "h2" | "h3" | "quote" | "code" | "ul" | "ol";
@@ -85,6 +98,8 @@ export default function EditorToolbar() {
   const [isItalic, setIsItalic] = useState(false);
   const [isCode, setIsCode] = useState(false);
   const [isLink, setIsLink] = useState(false);
+  const [canIndentListItem, setCanIndentListItem] = useState(false);
+  const [canOutdentListItem, setCanOutdentListItem] = useState(false);
 
   const updateToolbar = useCallback(() => {
     const selection = $getSelection();
@@ -95,6 +110,24 @@ export default function EditorToolbar() {
     setIsCode(selection.hasFormat("code"));
 
     const anchorNode = selection.anchor.getNode();
+    const anchorListItem = $getNearestNodeOfType(anchorNode, ListItemNode);
+    const focusListItem = $getNearestNodeOfType(
+      selection.focus.getNode(),
+      ListItemNode,
+    );
+    const selectionIsInList =
+      anchorListItem !== null && focusListItem !== null;
+
+    setCanIndentListItem(
+      selectionIsInList &&
+        (anchorListItem.getPreviousSibling() !== null ||
+          focusListItem.getPreviousSibling() !== null),
+    );
+    setCanOutdentListItem(
+      selectionIsInList &&
+        (anchorListItem.getIndent() > 0 || focusListItem.getIndent() > 0),
+    );
+
     const topLevelNode =
       anchorNode.getKey() === "root"
         ? anchorNode
@@ -184,6 +217,70 @@ export default function EditorToolbar() {
     if (url?.trim()) editor.dispatchCommand(TOGGLE_LINK_COMMAND, url.trim());
   };
 
+  const insertTable = () => {
+    const tableSize = window.prompt("Table size (rows × columns)", "3 × 3");
+    if (tableSize === null) return;
+
+    const match = tableSize.trim().match(/^(\d+)\s*[x×,]\s*(\d+)$/i);
+    const rows = Number(match?.[1]);
+    const columns = Number(match?.[2]);
+
+    if (
+      !match ||
+      !Number.isInteger(rows) ||
+      !Number.isInteger(columns) ||
+      rows < 1 ||
+      columns < 1 ||
+      rows > 20 ||
+      columns > 20
+    ) {
+      window.alert("Enter a table size from 1 × 1 to 20 × 20.");
+      return;
+    }
+
+    editor.dispatchCommand(INSERT_TABLE_COMMAND, {
+      columns: String(columns),
+      includeHeaders: true,
+      rows: String(rows),
+    });
+  };
+
+  const insertImage = () => {
+    const selectedText = editor.getEditorState().read(() => {
+      const selection = $getSelection();
+      return $isRangeSelection(selection) ? selection.getTextContent() : "";
+    });
+    const source = window.prompt("Paste an image URL", "https://");
+    if (source === null) return;
+
+    const trimmedSource = source.trim();
+    try {
+      const parsedUrl = new URL(trimmedSource, window.location.href);
+      if (
+        !trimmedSource ||
+        trimmedSource.includes(" ") ||
+        !["http:", "https:"].includes(parsedUrl.protocol)
+      ) {
+        throw new Error();
+      }
+    } catch {
+      window.alert("Enter an http(s) or site-relative image URL.");
+      return;
+    }
+
+    const altText = window.prompt(
+      "Describe the image for readers using screen readers",
+      selectedText.trim(),
+    );
+    if (altText === null) return;
+
+    editor.update(() => {
+      $insertNodeToNearestRoot(
+        $createImageNode({ altText: altText.trim(), src: trimmedSource }),
+      );
+    });
+  };
+
   return (
     <div className="editor-toolbar" role="toolbar" aria-label="Text formatting">
       <div className="editor-tool-group">
@@ -244,11 +341,35 @@ export default function EditorToolbar() {
         <ToolbarButton label="Numbered list" active={blockType === "ol"} onClick={() => formatList("ol")}>
           <ListNumbersIcon size={16} aria-hidden="true" />
         </ToolbarButton>
+        <ToolbarButton
+          label="Indent list item (Tab)"
+          disabled={!canIndentListItem}
+          onClick={() =>
+            editor.dispatchCommand(INDENT_CONTENT_COMMAND, undefined)
+          }
+        >
+          <TextIndentIcon size={16} aria-hidden="true" />
+        </ToolbarButton>
+        <ToolbarButton
+          label="Outdent list item (Shift+Tab)"
+          disabled={!canOutdentListItem}
+          onClick={() =>
+            editor.dispatchCommand(OUTDENT_CONTENT_COMMAND, undefined)
+          }
+        >
+          <TextOutdentIcon size={16} aria-hidden="true" />
+        </ToolbarButton>
         <ToolbarButton label="Quote" active={blockType === "quote"} onClick={() => formatBlock("quote")}>
           <QuotesIcon size={16} aria-hidden="true" />
         </ToolbarButton>
         <ToolbarButton label="Code block" active={blockType === "code"} onClick={() => formatBlock("code")}>
           <CodeBlockIcon size={16} aria-hidden="true" />
+        </ToolbarButton>
+        <ToolbarButton label="Insert table" onClick={insertTable}>
+          <TableIcon size={16} aria-hidden="true" />
+        </ToolbarButton>
+        <ToolbarButton label="Insert image" onClick={insertImage}>
+          <ImageSquareIcon size={16} aria-hidden="true" />
         </ToolbarButton>
       </div>
     </div>

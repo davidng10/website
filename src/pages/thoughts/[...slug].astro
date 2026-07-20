@@ -33,7 +33,7 @@ const published = new Intl.DateTimeFormat("en", {
       <div class="flex gap-2 text-[0.8125rem] text-[#68717d]">
         <time datetime={post.data.published.toISOString()}>{published}</time>
         <span aria-hidden="true">·</span>
-        <span>{post.data.readingTime}</span>
+        <span>{post.data.description}</span>
       </div>
     </header>
     <div class="prose">

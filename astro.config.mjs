@@ -8,6 +8,21 @@ import tailwindcss from "@tailwindcss/vite";
 export default defineConfig({
   integrations: [mdx(), react()],
   vite: {
+    optimizeDeps: {
+      exclude: [
+        "@lexical/code",
+        "@lexical/link",
+        "@lexical/list",
+        "@lexical/markdown",
+        "@lexical/react",
+        "@lexical/rich-text",
+        "@lexical/selection",
+        "@lexical/utils",
+        "@monaco-editor/react",
+        "lexical",
+        "monaco-editor",
+      ],
+    },
     plugins: [tailwindcss()],
   },
 });

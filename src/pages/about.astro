@@ -14,21 +14,28 @@ import BaseLayout from "../layouts/BaseLayout.astro";
     </p>
     <br />
     <p>
-      I currently work at <a
-        target="_blank"
-        href="https://www.trustana.com">Trustana</a
+      I currently work at <a target="_blank" href="https://www.trustana.com"
+        >Trustana</a
       >, where I build software for retailers such as Toys'R'Us, Harvey Norman,
-      David Jones et, to manage and optimize data for 100K to 1M products a month.
+      David Jones et, to manage and optimize data for 100K to 1M products a
+      month.
+    </p>
+    <br />
+    <p>
+      In my free time, I work on <a
+        target="_blank"
+        href="https://better-react-data-grid.vercel.app">Better Data Grid</a
+      >.
     </p>
     <figure class="flex flex-col items-center gap-1">
       <img
         class="mx-auto mt-5 block aspect-square w-full max-w-[320px] rounded-[3px] object-cover"
-        src="/profile_pic.png"
+        src="/profile_pic.webp"
         alt="Picture of Wen Bin"
         width="400"
         height="400"
       />
-      <figcaption class="text-xs max-w-1/3 text-center">
+      <figcaption class="text-xs max-w-1/2 text-center">
         Picture of me generated using a custom FLUX workflow via ComfyUI
       </figcaption>
     </figure>
@@ -38,7 +45,21 @@ import BaseLayout from "../layouts/BaseLayout.astro";
         I'm trying to write about topics and work that are representative of
         what I like: complex components and deep ends into system designs.
       </p>
-    
+      {
+        (
+          <ol class="m-0 pl-6 text-base leading-[1.55] text-black">
+            <li>
+              <a href={`/thoughts/better-data-grid/`}>
+                How to build a performant data grid
+              </a>
+              <span>
+                — Walkthrough of my trial and errors in building a data grid in
+                React
+              </span>
+            </li>
+          </ol>
+        )
+      }
     </section>
   </article>
 </BaseLayout>

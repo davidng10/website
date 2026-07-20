@@ -2,20 +2,22 @@ import { lazy, Suspense, useEffect, useState } from "react";
 import {
   $convertFromMarkdownString,
   $convertToMarkdownString,
-  TRANSFORMERS,
 } from "@lexical/markdown";
 import { HistoryPlugin } from "@lexical/react/LexicalHistoryPlugin";
 import { LinkPlugin } from "@lexical/react/LexicalLinkPlugin";
 import { ListPlugin } from "@lexical/react/LexicalListPlugin";
 import { MarkdownShortcutPlugin } from "@lexical/react/LexicalMarkdownShortcutPlugin";
 import { OnChangePlugin } from "@lexical/react/LexicalOnChangePlugin";
+import { TablePlugin } from "@lexical/react/LexicalTablePlugin";
 import { useLexicalComposerContext } from "@lexical/react/LexicalComposerContext";
 import type { EditorState, LexicalEditor } from "lexical";
 import { clearDraft, saveDraft } from "./draftStorage";
 import EditorContent from "./EditorContent";
 import EditorToolbar from "./EditorToolbar";
+import ListIndentationPlugin from "./ListIndentationPlugin";
 import type { CopyState, EditorMode } from "./editorTypes";
 import { copyMarkdown, downloadMarkdown } from "./markdownActions";
+import { EDITOR_TRANSFORMERS } from "./markdownTransformers";
 import WorkspaceActionsBar from "./WorkspaceActionsBar";
 import "./styles/workspace.css";
 
@@ -42,7 +44,7 @@ export default function EditorWorkspace({
   ) => {
     editorState.read(
       () => {
-        setMarkdown($convertToMarkdownString(TRANSFORMERS));
+        setMarkdown($convertToMarkdownString(EDITOR_TRANSFORMERS));
       },
       { editor: activeEditor },
     );
@@ -53,11 +55,11 @@ export default function EditorWorkspace({
 
     if (nextMode === "markdown") {
       editor.getEditorState().read(() => {
-        setMarkdown($convertToMarkdownString(TRANSFORMERS));
+        setMarkdown($convertToMarkdownString(EDITOR_TRANSFORMERS));
       });
     } else {
       editor.update(() => {
-        $convertFromMarkdownString(markdown, TRANSFORMERS);
+        $convertFromMarkdownString(markdown, EDITOR_TRANSFORMERS);
       });
     }
 
@@ -84,7 +86,9 @@ export default function EditorWorkspace({
     if (!shouldClear) return;
 
     setMarkdown("");
-    editor.update(() => $convertFromMarkdownString("", TRANSFORMERS));
+    editor.update(() =>
+      $convertFromMarkdownString("", EDITOR_TRANSFORMERS),
+    );
     setMode("pretty");
     clearDraft();
   };
@@ -131,8 +135,10 @@ export default function EditorWorkspace({
 
       <HistoryPlugin />
       <ListPlugin />
+      <ListIndentationPlugin />
       <LinkPlugin />
-      <MarkdownShortcutPlugin transformers={TRANSFORMERS} />
+      <TablePlugin hasCellMerge={false} hasHorizontalScroll />
+      <MarkdownShortcutPlugin transformers={EDITOR_TRANSFORMERS} />
       <OnChangePlugin onChange={handleEditorChange} ignoreSelectionChange />
     </section>
   );

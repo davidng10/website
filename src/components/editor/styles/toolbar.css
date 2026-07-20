@@ -1,4 +1,7 @@
 .editor-toolbar {
+  position: sticky;
+  z-index: 5;
+  top: 0;
   display: flex;
   min-height: 3.45rem;
   align-items: center;
