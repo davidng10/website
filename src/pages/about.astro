@@ -1,16 +1,25 @@
 ---
 import BaseLayout from "../layouts/BaseLayout.astro";
+import { AUTHOR } from "../data/author";
+
+const structuredData = {
+  "@context": "https://schema.org",
+  "@type": "ProfilePage",
+  url: "/about/",
+  mainEntity: AUTHOR,
+};
 ---
 
 <BaseLayout
   title="About"
   description="About Wen Bin, a software engineer based in Singapore."
+  structuredData={structuredData}
 >
   <article aria-labelledby="about-title">
     <h1 id="about-title" class="mb-2">About</h1>
     <p class="mb-0 text-base leading-[1.55] text-black">
-      Hi! I’m Wen Bin - you can call me David, I'm a software engineer based in
-      Singapore.
+      Hi! I’m Ng Wen Bin, though I go by Wen Bin or David, I'm a software
+      engineer based in Singapore.
     </p>
     <br />
     <p>

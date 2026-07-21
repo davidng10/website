@@ -7,10 +7,10 @@ interface Props {
   title: string;
   description: string;
   flush?: boolean;
+  structuredData?: Record<string, unknown>;
 }
 
-
-const { title, description, flush = false } = Astro.props;
+const { title, description, flush = false, structuredData } = Astro.props;
 const pathname = Astro.url.pathname;
 
 const navigation = [
@@ -32,6 +32,15 @@ const navigation = [
     <meta name="viewport" content="width=device-width" />
     <meta name="generator" content={Astro.generator} />
     <meta name="description" content={description} />
+    {
+      structuredData && (
+        <script
+          type="application/ld+json"
+          is:inline
+          set:html={JSON.stringify(structuredData)}
+        />
+      )
+    }
     <link rel="icon" href="/favicon.ico" />
     <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
     <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png" />

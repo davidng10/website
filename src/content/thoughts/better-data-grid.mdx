@@ -7,9 +7,9 @@ draft: false
 
 Data grids show up in almost every data-heavy product. The basic version is simple, but the difficulty increases quickly once the grid when we add complex UI features - Drag sort columns, cell range selection, frozen columns etc.
 
-At [Trustana](https://www.trustana.com), we handle thousands of products where users need to view and perform actions on large amounts of dense tabular product data, resulting in complex cell renders and table actions.
+At [Trustana](https://www.trustana.com), we process product catalogs at massive scale (100K - 1M+ products a month). With server-side data operations, the primary frontend challenge is efficiently rendering info dense tables composed of rich custom cells.
 
-We have been using AntDesign table for over 2 years but have reached our limits as features grew. There are well built tables out there like AG Grid, but the annual costs was not suitable for us. It made me also wonder how feasible it is to build one with essential feature parity.
+We have been using AntDesign table for over 2 years but have reached our limits as features grew. There are well built tables out there like AG Grid, but the annual costs was not suitable for us. It then made me wonder how feasible it is to build one with essential feature parity.
 
 Here's how my attempt went:
 
@@ -19,8 +19,8 @@ I ended up building several versions with various architectural branches. The fi
 
 The final approach uses one native scroll container, separate frozen and center zones, TanStack Virtual for row and center-column virtualization, external stores for high-frequency interaction state, geometric selection overlays and a portal-based editor.
 
-[Demo](https://better-react-data-grid.vercel.app/)
-[Github](https://github.com/davidng10/react-data-grid)
+[Live demo](https://better-react-data-grid.vercel.app/),
+[Github code](https://github.com/davidng10/react-data-grid)
 
 ## Starting with the HTML `<table>`
 
@@ -393,7 +393,7 @@ For FPS measurement, I measured it using a 3 second polling average.
 
 ## Remaining work
 
-The final grid is not yet a complete,
+The final grid is not yet complete,
 
 1. Gotta write docs
 2. Expand API to fully support uncontrolled props

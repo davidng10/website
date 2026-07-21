@@ -1,5 +1,6 @@
 ---
 import { getCollection, render, type CollectionEntry } from "astro:content";
+import { AUTHOR } from "../../data/author";
 import BaseLayout from "../../layouts/BaseLayout.astro";
 
 export async function getStaticPaths() {
@@ -22,9 +23,28 @@ const published = new Intl.DateTimeFormat("en", {
   month: "long",
   day: "numeric",
 }).format(post.data.published);
+
+const postUrl = `/thoughts/${post.id}/`;
+const structuredData = {
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  headline: post.data.title,
+  description: post.data.description,
+  datePublished: post.data.published.toISOString(),
+  url: postUrl,
+  mainEntityOfPage: {
+    "@type": "WebPage",
+    "@id": postUrl,
+  },
+  author: AUTHOR,
+};
 ---
 
-<BaseLayout title={`${post.data.title}`} description={post.data.description}>
+<BaseLayout
+  title={`${post.data.title}`}
+  description={post.data.description}
+  structuredData={structuredData}
+>
   <article>
     <header class="mb-8 border-b border-[#e3e5e8] pb-7">
       <time
