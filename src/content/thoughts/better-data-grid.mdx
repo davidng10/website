@@ -1,26 +1,26 @@
 ---
 title: How to build a performant data grid
-description: My attempt at building a feature rich performant virtualized React data grid
+description: My attempt at building a feature-rich, performant, virtualized React data grid
 published: 2026-07-19
 draft: false
 ---
 
-Data grids show up in almost every data-heavy product. The basic version is simple, but the difficulty increases quickly once the grid when we add complex UI features - Drag sort columns, cell range selection, frozen columns etc.
+Data grids show up in almost every data-heavy product. The basic version is simple, but the difficulty increases quickly once we add complex UI features such as drag-sorting columns, selecting cell ranges and freezing columns.
 
-At [Trustana](https://www.trustana.com), we process product catalogs at massive scale (100K - 1M+ products a month). With server-side data operations, the primary frontend challenge is efficiently rendering info dense tables composed of rich custom cells.
+At [Trustana](https://www.trustana.com), we process product catalogs at a massive scale (100K–1M+ products a month). With server-side data operations, the primary frontend challenge is efficiently rendering information-dense tables composed of rich custom cells.
 
-We have been using AntDesign table for over 2 years but have reached our limits as features grew. There are well built tables out there like AG Grid, but the annual costs was not suitable for us. It then made me wonder how feasible it is to build one with essential feature parity.
+We have been using Ant Design Table for over two years, but we have reached its limits as our feature set has grown. There are well-built tables available, such as AG Grid, but the annual cost was not suitable for us. This made me wonder how feasible it would be to build one with essential feature parity.
 
 Here's how my attempt went:
 
-The requirements included row and column virtualisation, left and right frozen columns, column reorder and resize, cell-range selection, keyboard traversal, row selection and inline editing.
+The requirements included row and column virtualisation, left and right frozen columns, column reordering and resizing, cell-range selection, keyboard traversal, row selection and inline editing.
 
-I ended up building several versions with various architectural branches. The first used TanStack Table, the second used a custom CSS grid and `subgrid`, the third was mainly a study of an existing [comcast data grid](https://comcast.github.io/react-data-grid/#/CommonFeatures) architecture, and the final version combined the useful parts of all three. I also did a sneak peak at [Glide Data Grid](https://grid.glideapps.com/) for it's canvas architecture which was also very interesting.
+I ended up building several versions with various architectural branches. The first used TanStack Table, the second used a custom CSS grid and `subgrid`, the third was mainly a study of the existing [Comcast data grid](https://comcast.github.io/react-data-grid/#/CommonFeatures) architecture, and the final version combined the useful parts of all three. I also took a sneak peek at [Glide Data Grid](https://grid.glideapps.com/) and its canvas architecture, which was also very interesting.
 
 The final approach uses one native scroll container, separate frozen and center zones, TanStack Virtual for row and center-column virtualization, external stores for high-frequency interaction state, geometric selection overlays and a portal-based editor.
 
-[Live demo](https://better-react-data-grid.vercel.app/),
-[Github code](https://github.com/davidng10/react-data-grid)
+[Live demo](https://better-react-data-grid.vercel.app/)
+[GitHub code](https://github.com/davidng10/react-data-grid)
 
 ## Starting with the HTML `<table>`
 
@@ -38,7 +38,7 @@ The problem starts when more advanced behaviour is required:
 
 HTML tables use a layout algorithm where rows and columns participate in the same table layout. This becomes restrictive when parts of the table need independent positioning or virtualisation.
 
-This is why many data-heavy products use a grid built from `<div>` elements instead. It gives up the browser's table layout and takes ownership of positioning, scrolling and interactions. Such examples include MUI, AG Grid.
+This is why many data-heavy products use a grid built from `<div>` elements instead. It gives up the browser's table layout and takes ownership of positioning, scrolling and interactions. Examples include MUI and AG Grid.
 
 Ant Design's [Table](https://ant.design/components/table) is an interesting example of how far a semantic table can go. It supports a lot of features, but if you push it far enough, complex sticky and scrolling combinations still expose the limitations of the underlying layout model.
 
@@ -58,13 +58,13 @@ The functional requirements for my experiment were:
 10. Keyboard traversal
 11. Row selection
 
-For performance, I took reference from the [RAIL model](https://web.dev/articles/rail) which is useful for quantifying interaction frame goals. Continuous interactions such as scrolling, selection auto-scroll and drag movement should target 60 FPS. This gives around 16ms for scripting, style, layout and paint.
+For performance, I used the [RAIL model](https://web.dev/articles/rail) as a reference. It is useful for quantifying interaction frame goals. Continuous interactions such as scrolling, selection auto-scroll and drag movement should target 60 FPS. This gives around 16 ms for scripting, style, layout and paint.
 
-Discrete interactions have a different budget. Ending a column resize or dropping a reordered column can take 50-100ms without feeling slow.
+Discrete interactions have a different budget. Ending a column resize or dropping a reordered column can take 50–100 ms without feeling slow.
 
-This distinction became important later. Instead of updating the complete grid on every resize movement, the final version only moves a guide during the gesture and commits the new width once on pointer-up. Albeit this is a tradeoff with UX as live reflow during resize or reordering is quite expensive architecturally with all requirements stacked up.
+This distinction became important later. Instead of updating the complete grid on every resize movement, the final version only moves a guide during the gesture and commits the new width once on pointer-up. This is a UX trade-off, as live reflow during resizing or reordering is architecturally expensive when combined with all the other requirements.
 
-We are also limiting the table to exclude data filtering. In my opinion, it would be simpler to move the data filtering ownership to the integrator.
+We are also limiting the table by excluding data filtering. In my opinion, it would be simpler to give the integrator ownership of data filtering.
 
 ## Identifying the main problems
 
@@ -139,7 +139,7 @@ mounted cells = visible rows x total visible columns
 
 This works well for a grid with tens of columns. It does not work as well when the schema contains hundreds or thousands of columns.
 
-Column resize used TanStack's live resize mode. Every pointer movement updated controlled sizing state, ran the root grid and mounted rows again, then passed a changed width to the cells in the resized column.
+Column resize used TanStack's live resize mode. Every pointer movement updated the controlled sizing state, rendered the root grid and mounted rows again, then passed a changed width to the cells in the resized column.
 
 Range selection had a similar update path. The range lived near the grid root and mounted cells derived whether they were selected. Memoization reduced the work, but a pointer move still travelled through a larger part of the React tree than necessary.
 
@@ -195,7 +195,7 @@ CSS `subgrid` simplified width propagation, but sticky elements inside a large v
 
 This is an important distinction: a clean React Profiler result does not mean the complete frame is fast.
 
-Renderer performance was the main focus for V2 and thus several product features were incomplete, which made it difficult to do an evaluation:
+Renderer performance was the main focus for V2, so several product features were incomplete, which made it difficult to evaluate:
 
 - No cell range selection
 - No editing
@@ -209,7 +209,7 @@ This attempt showed that two-axis DOM virtualisation and one visual column model
 
 ## Studying a more complete grid architecture
 
-The third approach which is just a study on [Comcast data grid](https://comcast.github.io/react-data-grid/#/CommonFeatures) which has:
+The third approach was a study of the [Comcast data grid](https://comcast.github.io/react-data-grid/#/CommonFeatures), which has:
 
 - Variable row heights with precomputed positions and binary search
 - Auto-width columns using hidden measuring cells
@@ -221,7 +221,7 @@ The third approach which is just a study on [Comcast data grid](https://comcast.
 
 It also demonstrated how advanced grid features affect the same coordinate engine. Variable row heights change vertical lookup and selection geometry. `colSpan` changes column iteration and hit testing. Group rows change the meaning of a row index. Editing changes focus and virtualisation behaviour.
 
-The result was to treat this implementation as a source of individual mechanisms instead of copying the complete architecture. A variable-height model or RTL coordinate model can be ported if the requirement exists, without bringing every other feature with it.
+I decided to treat this implementation as a source of individual mechanisms instead of copying the complete architecture. A variable-height model or RTL coordinate model can be ported if the requirement exists, without bringing every other feature with it.
 
 ## Final approach: virtualized zones and isolated interaction state
 
@@ -333,7 +333,7 @@ The center zone supports horizontal drag auto-scroll. Reorder and selection both
 
 The first implementation changed actual column widths during every pointer movement. The final implementation only moves a resize guide during the gesture.
 
-On pointer-up it calculates and commits the new width once. This gives continuous movement a smaller render path while allowing the discrete commit to perform the layout update.
+On pointer-up, it calculates and commits the new width once. This gives continuous movement a smaller render path while allowing the discrete commit to perform the layout update.
 
 The trade-off is that cell content does not reflow live during resize. The user sees the guide followed by the committed width. For this grid it was a reasonable performance and implementation trade-off.
 
@@ -372,7 +372,7 @@ This reduces DOM, style and layout work and is designed for millions of rows and
 
 Canvas has a different customisation model. Custom read cells implement Canvas drawing instead of rendering arbitrary JSX. Native links, buttons and other interactive elements require hit testing or DOM overlays. Accessibility also requires a separate semantic and focus layer because painted cells are not DOM elements.
 
-One issue I found earlier on was the limitations on transparency rendering. Canvas struggles with transparency because it works like a flat sheet of paper. When React updates, it usually overwrites old pixels or builds a DOM. Canvas, however, requires you to manually erase and redraw the background; otherwise, transparent objects stack up and become opaque. This is a huge problem if your component library has tons of alpha tokens (E.g. AntDesign)
+One issue I found early on was the limitation of rendering transparency. Canvas struggles with transparency because it works like a flat sheet of paper. When React updates, it usually overwrites old pixels or builds a DOM. Canvas, however, requires you to manually erase and redraw the background; otherwise, transparent objects stack up and become opaque. This is a huge problem if your component library has tons of alpha tokens (e.g. Ant Design).
 
 The final local grid keeps DOM cells because the use case benefits from custom React content, CSS styling and both left and right frozen zones. Glide's public freezing model describes a count of leading columns rather than separate left and right zones.
 
@@ -380,28 +380,28 @@ Canvas becomes attractive when viewport density, cell update frequency or cell c
 
 ## Benchmarks for the final implementation
 
-For FPS measurement, I measured it using a 3 second polling average.
+For FPS measurements, I used a three-second polling average.
 
-1. 60 FPS scroll at 100,000 rows x 1,000 columns
-2. 60 FPS cell range selection of entire sheet (100M cells)
-3. 60 FPS in cell resize drop
-4. 30 FPS cell jump from 0th column to last column
-5. 30 FPS in column drag drop, 60 FPS in column drag scroll
-6. 60 FPS in column freezing
-7. Package dependency - Tanstack Virtual
-8. Estimated bundle size \~ 18.51 kb Gzipped.
+1. 60 FPS while scrolling a grid with 100,000 rows x 1,000 columns
+2. 60 FPS while selecting a cell range spanning the entire sheet (100M cells)
+3. 60 FPS during column resizing
+4. 30 FPS when jumping from the first column to the last column
+5. 30 FPS during column drag-and-drop and 60 FPS during column drag-scrolling
+6. 60 FPS during column freezing
+7. Package dependency: TanStack Virtual
+8. Estimated bundle size: \~18.51 kB gzipped
 
 ## Remaining work
 
-The final grid is not yet complete,
+The final grid is not yet complete:
 
-1. Gotta write docs
-2. Expand API to fully support uncontrolled props
-3. Expandable rows
-4. Support installation via NPM + Shadcn
+1. Write documentation
+2. Expand the API to fully support uncontrolled props
+3. Support expandable rows
+4. Support installation via npm and shadcn
 5. Keyboard traversal currently supports arrows, Shift extension and Ctrl/Cmd jumps. Home, End, PageUp, PageDown and general Tab traversal are not complete.
 6. Clipboard and fill behaviour are also missing. A future implementation should expose a bulk range callback rather than invoking one accessor for every cell in a large selection.
-7. Rows use a fixed height and columns use numeric widths. Variable heights, auto width, merged cells, grouped headers and RTL would all require changes to geometry, hit testing, selection and editor placement.
+7. Rows use a fixed height and columns use numeric widths. Variable heights, auto-width columns, merged cells, grouped headers and RTL would all require changes to geometry, hit testing, selection and editor placement.
 
 ## Summary
 
